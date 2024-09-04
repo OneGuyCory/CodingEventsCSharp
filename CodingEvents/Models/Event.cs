@@ -8,25 +8,21 @@ namespace CodingEvents.Models
         public string? ContactEmail { get; set; }
 
         public EventType Type { get; set; }
-        public int Id { get; }
-        static private int nextId = 1;
+        public int Id { get; set; }
 
         public Event()
         {
-            Id = nextId;
-            nextId++;
         }
 
 
-        public Event(string name, string description)
+        public Event(string name, string description, string contactEmail)
         {
             Name = name;
             Description = description;
-            Id = nextId;
-            nextId++;
+            ContactEmail = contactEmail;
         }
 
-        public override string ToString()
+        public override string? ToString()
         {
             return Name;
         }
