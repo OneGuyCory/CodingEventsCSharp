@@ -19,7 +19,7 @@ namespace CodingEvents.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            List<Event> events = context.Events.ToList();
+            List<Event> events = context.Events.Include(e => e.Category).ToList();
 
             return View(events);
         }
@@ -27,7 +27,8 @@ namespace CodingEvents.Controllers
         [HttpGet]
         public IActionResult Add()
         {
-            AddEventViewModel addEventViewModel = new AddEventViewModel();
+            List<EventCategory> categories = context.Categories.ToList();
+            AddEventViewModel addEventViewModel = new AddEventViewModel(categories);
 
             return View(addEventViewModel);
         }
@@ -37,12 +38,13 @@ namespace CodingEvents.Controllers
         {
             if (ModelState.IsValid)
             {
+                EventCategory category = context.Categories.Find(addEventViewModel.CategoryId);
                 Event newEvent = new Event
                 {
                     Name = addEventViewModel.Name,
                     Description = addEventViewModel.Description,
                     ContactEmail = addEventViewModel.ContactEmail,
-                    Type = addEventViewModel.Type,
+                    Category = category
                 };
 
                 context.Events.Add(newEvent);
@@ -73,25 +75,15 @@ namespace CodingEvents.Controllers
             return Redirect("/Events");
         }
 
-        /*public IActionResult Edit(int eventId)
+        public IActionResult Detail(int id)
         {
-            Event eventToEdit = EventData.GetById(eventId);
-            ViewBag.eventToEdit = eventToEdit;
-            ViewBag.title = "Edit Event" + eventToEdit.Name + "(id = " + eventToEdit.Id + ")";
+            Event theEvent = context.Events
+                .Include(e => e.Category)
+                .Include(e => e.Tags)
+                .Single(e => e.Id == id);
 
-            return View();
-
+            EventDetailViewModel viewModel = new EventDetailViewModel(theEvent);
+            return View(viewModel);
         }
-
-        [HttpPost]
-        [Route("/Events/Edit")]
-        public IActionResult SubmitEditEventForm(int eventId, string name, string description)
-        {
-            Event eventToEdit = EventData.GetById(eventId);
-            eventToEdit.Name = name;
-            eventToEdit.Description = description;
-
-           return Redirect("/Events");
-        }*/
     }
 }

@@ -7,8 +7,12 @@ namespace CodingEvents.Models
         public string? Description { get; set; }
         public string? ContactEmail { get; set; }
 
-        public EventType Type { get; set; }
+        public EventCategory Category { get; set; }
+
+        public int CategoryId { get; set; }
         public int Id { get; set; }
+        public ICollection<Tag>? Tags { get; set; }
+
 
         public Event()
         {
@@ -20,6 +24,7 @@ namespace CodingEvents.Models
             Name = name;
             Description = description;
             ContactEmail = contactEmail;
+            Tags = new List<Tag>();
         }
 
         public override string? ToString()
